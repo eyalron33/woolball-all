@@ -23,7 +23,7 @@ const Index = () => {
 
   const [verifyData, setVerifyData] = useState({
     proof: "",
-    nameID: "",
+    name: "",
     verifiedForTimestamp: "",
   });
 
@@ -89,7 +89,7 @@ const Index = () => {
 
       setVerifyData({
         proof: hexData.slice(6 * 64),
-        nameID: sequences[2],
+        name: sequences[2],
         verifiedForTimestamp: sequences[3],
       });
     };
@@ -229,6 +229,19 @@ const Index = () => {
               </div>
 
               {/* Verification Column */}
+              <input
+                type="text"
+                placeholder="Name"
+                value={verifyData.name}
+                onChange={(e) =>
+                  setVerifyData({ ...verifyData, name: e.target.value })
+                }
+                style={{
+                  display: "block",
+                  width: "50%",
+                  marginBottom: "0.5rem",
+                }}
+              />
               <div style={{ marginBottom: "1rem" }}>
                 <input
                   type="file"
