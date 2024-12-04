@@ -23,8 +23,10 @@ const Index = () => {
 
   const [verifyData, setVerifyData] = useState({
     proof: "",
-    verifierAddress: "",
+    nameID: "",
+    verifiedForTimestamp: "",
   });
+
 
   const checkConnection = async () => {
     const { ethereum } = window;
@@ -72,9 +74,31 @@ const Index = () => {
     registerHuman(registerData)
   };
 
+  const handleFileUpload = (file) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      const binaryData = e.target.result;
+      const hexData = Array.from(new Uint8Array(binaryData))
+        .map((b) => b.toString(16).padStart(2, "0"))
+        .join("");
+
+      const sequences = [];
+      for (let i = 0; i < 6; i++) {
+        sequences.push(hexData.slice(i * 64, (i + 1) * 64));
+      }
+
+      setVerifyData({
+        proof: hexData.slice(6 * 64),
+        nameID: sequences[2],
+        verifiedForTimestamp: sequences[3],
+      });
+    };
+    reader.readAsArrayBuffer(file);
+  };
+
   const handleVerifyHuman = async () => {
-    console.log("Verifying name with data:", verifyData);
-    verifyHuman(verifyData)
+    console.log("Verifying with data:", verifyData);
+    verifyHuman(verifyData);
   };
 
 
@@ -205,40 +229,12 @@ const Index = () => {
               </div>
 
               {/* Verification Column */}
-              <div style={{ flex: 1 }}>
-                <h3>Verify Name</h3>
+              <div style={{ marginBottom: "1rem" }}>
                 <input
-                  type="text"
-                  placeholder="Name"
-                  value={verifyData.name}
-                  onChange={(e) =>
-                    setRegisterData({ ...verifyData, name: e.target.value })
-                  }
-                  style={{
-                    display: "block",
-                    width: "50%",
-                    marginBottom: "0.5rem",
-                  }}
+                  type="file"
+                  onChange={(e) => handleFileUpload(e.target.files[0])}
+                  style={{ display: "block", marginBottom: "0.5rem" }}
                 />
-                <div style={{ marginBottom: "1rem" }}>
-                  <textarea
-                    placeholder="Proof"
-                    value={verifyData.proof}
-                    onChange={(e) =>
-                      setVerifyData({ ...verifyData, proof: e.target.value })
-                    }
-                    style={{
-                      display: "block",
-                      width: "100%",
-                      height: "150px", // Adjust height for visibility
-                      resize: "vertical", // Allow vertical resizing if needed
-                      marginBottom: "0.5rem",
-                      padding: "0.5rem",
-                      fontSize: "1rem",
-                      fontFamily: "monospace", // Optional: makes proof more readable
-                    }}
-                  />
-                </div>
                 <button className="btn connect-btn" onClick={handleVerifyHuman}>
                   Verify Name
                 </button>

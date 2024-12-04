@@ -12,6 +12,8 @@ export const verifyHuman = async ({ name, proof }) => {
     const CONTRACT_ADDRESS = "0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9"; // Change to your contract address
     const CONTRACT_ABI = woolballJSON.abi;
 
+    const HUMAN_VERIFIER_CONTRACT = "0xDc64a140Aa3E981100a9becA4E685f962f0cF6C9"; // Change to your contract address;
+
     try {
         // Check if Metamask is available
         if (!window.ethereum) {
@@ -27,12 +29,7 @@ export const verifyHuman = async ({ name, proof }) => {
         const contract = new ethers.Contract(CONTRACT_ADDRESS, CONTRACT_ABI, signer);
 
         // Call the contract's registerName function
-        const options = {
-            value: ethers.parseUnits("10000000000000.0", "wei"),
-        };
-        console.log("options: ", options);
-        const nameID = await contract.newHumanName.staticCall(name, pubKeyX, pubKeyY, duration, options);
-        const tx = await contract.newHumanName(name, pubKeyX, pubKeyY, duration, options);
+        const tx = await contract.verifyHuamn(proof, nameID, verifiedForTimestamp, HUMAN_VERIFIER_CONTRACT);
         console.log("Transaction sent:", tx);
 
         // Wait for the transaction to be mined
