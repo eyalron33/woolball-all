@@ -229,28 +229,35 @@ const Index = () => {
               </div>
 
               {/* Verification Column */}
-              <input
-                type="text"
-                placeholder="Name"
-                value={verifyData.name}
-                onChange={(e) =>
-                  setVerifyData({ ...verifyData, name: e.target.value })
-                }
-                style={{
-                  display: "block",
-                  width: "50%",
-                  marginBottom: "0.5rem",
-                }}
-              />
-              <div style={{ marginBottom: "1rem" }}>
+              <div style={{
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
+                marginBottom: "1rem",
+              }}>
                 <input
-                  type="file"
-                  onChange={(e) => handleFileUpload(e.target.files[0])}
-                  style={{ display: "block", marginBottom: "0.5rem" }}
+                  type="text"
+                  placeholder="Name"
+                  value={verifyData.name}
+                  onChange={(e) =>
+                    setVerifyData({ ...verifyData, name: e.target.value })
+                  }
+                  style={{
+                    display: "block",
+                    width: "50%",
+                    marginBottom: "0.5rem",
+                  }}
                 />
-                <button className="btn connect-btn" onClick={handleVerifyHuman}>
-                  Verify Name
-                </button>
+                <div style={{ marginBottom: "1rem" }}>
+                  <input
+                    type="file"
+                    onChange={(e) => handleFileUpload(e.target.files[0])}
+                    style={{ display: "block", marginBottom: "0.5rem" }}
+                  />
+                  <button className="btn connect-btn" onClick={handleVerifyHuman}>
+                    Verify Name
+                  </button>
+                </div>
               </div>
 
             </>
