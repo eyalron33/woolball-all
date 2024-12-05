@@ -19,6 +19,18 @@ a {
   color: #739CFB;
 }
 
+input {
+  outline: none;
+  border:none;
+  box-shadow: none;  
+  padding: 6px 12px;
+  border-radius: 4px;
+  background-color: #222;
+  color: #fff;
+  font-size: 14px;
+  line-height: 1.5;
+}
+
 .container {
   justify-content: center;
   text-align: center;
@@ -29,10 +41,19 @@ a {
   align-items: center;
 }
 
+.flex-column {
+  flex-direction: column;
+}
+
+.app {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
 .fren-nav {
   padding: 20px 30px;
   background: url('/stars.png');
-
 }
 
 .btn {
@@ -63,6 +84,69 @@ a {
   border-radius: 15px;
   padding: 15px 20px;
   margin-left: 1.5vw;
+}
+
+.main-section {
+  flex-grow: 1;
+  position: relative;
+  padding: 30px 20px 60px;
+}
+
+.form-wrapper {
+  position: relative;
+  width: 100%;
+  padding: 30px 20px;
+  opacity: 0;   
+  z-index: -3;
+  transform: translateY(-100%);
+  opacity: 0;
+  transition: all 0.25s linear; 
+}
+
+.form-wrapper.show {
+  animation: slide-in 0.5s forwards;
+
+}
+.form-wrapper.hide {
+  animation: slide-out 0.5s forwards;
+  padding: 0;
+  overflow: hidden;
+}
+
+.form-wrapper form {
+  width: 100%;
+  max-width: 420px;
+  align-items: flex-start;
+}
+
+.form-wrapper form:not(:first-of-type) {
+  padding-top: 30px;
+}
+
+.form-wrapper form input {
+  width: 100%;
+  margin-bottom: 0.5rem;
+}
+
+.form-wrapper form input:first-of-type {
+  margin-top: 1rem;
+}
+
+.form-wrapper form button {
+  margin-top: 0.5rem;
+}
+
+.section-overlay {
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    background: linear-gradient(
+      to bottom,
+      #000 40%,rgba(0, 0, 0, 0) 100%
+    );
+    position: absolute;
+    left: 0;
+    top: 0;
 }
 
 .main-title {
@@ -119,5 +203,29 @@ a {
   .sign-btn {
     font-size: 15px;
     width: 200px;
+  }
+}
+
+@keyframes slide-in {
+  0% {
+    opacity: 0;
+    transform: translateY(-100%);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+    height: auto;
+  }
+}
+
+@keyframes slide-out {
+  0% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  100% {
+    opacity: 0;
+    transform: translateY(-100%);
+    height: 0;
   }
 }
