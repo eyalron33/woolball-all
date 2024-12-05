@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { registerHuman } from "../utils/registerHuman";
 import { verifyHuman } from "../utils/verifyHuman";
 import Link from "next/link";
@@ -8,6 +8,7 @@ import Crowd from "../component/crowd"
 
 
 const Index = () => {
+  const formWrapperRef = useRef(null)
   const [haveMetamask, sethaveMetamask] = useState(true);
 
   const [client, setclient] = useState({
@@ -65,9 +66,22 @@ const Index = () => {
         isConnected: true,
         address: accounts[0],
       });
+      
+      if (formWrapperRef?.current) {
+        formWrapperRef.current.scrollIntoView({
+          behavior: 'smooth',
+          block: 'start',
+        })
+      }
     } catch (error) {
       console.log("Error connecting to metamask", error);
     }
+  };
+
+  const disconnectWeb3 = () => {
+    setclient({
+      isConnected: false,
+    });
   };
 
   const handleRegisterHuman = async () => {
@@ -107,25 +121,17 @@ const Index = () => {
   }, []);
 
   return (
-    <>
+    <div className="app">
       {/* Navbar */}
       <nav className="fren-nav d-flex">
         <div>
           <h3>Don't press me I'm not a link</h3>
         </div>
         <div className="d-flex" style={{ marginLeft: "auto" }}>
-          <div>
-            <button className="btn connect-btn" onClick={connectWeb3}>
-              {client.isConnected ? (
-                <>
-                  {client.address.slice(0, 4)}...
-                  {client.address.slice(38, 42)}
-                </>
-              ) : (
-                <>Connect Wallet</>
-              )}
-            </button>
-          </div>
+          <ConnectBtn
+            address={client.address}
+            onClick={client.isConnected ? disconnectWeb3 : connectWeb3}
+          />
           <div>
             <Link href="https://mastodon.social/@neiman">
               <button className="btn md-btn">Mastodon</button>
@@ -135,7 +141,9 @@ const Index = () => {
       </nav>
       {/* Navbar end */}
 
-      <section className="container d-flex">
+      <section className="main-section container d-flex">
+      <div className="section-overlay"/>
+      <Crowd />
         <main>
           <h1 className="main-title">Woolball  <img src="/giant-hash-sign.png" alt="Rocket" className="hashtag-image-title" /></h1>
 
@@ -143,140 +151,110 @@ const Index = () => {
 
           {!haveMetamask ? (
             <Metamask />
-          ) : client.isConnected ? (
-            <>
-              <br />
-              <h2>You're connected ✅</h2>
-
-              {/* Registration Column */}
-              <div style={{
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "center",
-              }}>
-                <h3>Register Name</h3>
-                <div style={{
-                  display: "flex",
-                  flexDirection: "column",
-                  alignItems: "center",
-                  marginBottom: "1rem",
-                }}>
-                  <input
-                    type="text"
-                    placeholder="Name"
-                    value={registerData.name}
-                    onChange={(e) =>
-                      setRegisterData({ ...registerData, name: e.target.value })
-                    }
-                    style={{
-                      display: "block",
-                      width: "50%",
-                      marginBottom: "0.5rem",
-                    }}
-                  />
-                  <input
-                    type="text"
-                    placeholder="Public Key X Coordinate"
-                    value={registerData.pubKeyX}
-                    onChange={(e) =>
-                      setRegisterData({
-                        ...registerData,
-                        pubKeyX: e.target.value,
-                      })
-                    }
-                    style={{
-                      display: "block",
-                      width: "50%",
-                      marginBottom: "0.5rem",
-                    }}
-                  />
-                  <input
-                    type="text"
-                    placeholder="Public Key Y Coordinate"
-                    value={registerData.pubKeyY}
-                    onChange={(e) =>
-                      setRegisterData({
-                        ...registerData,
-                        pubKeyY: e.target.value,
-                      })
-                    }
-                    style={{
-                      display: "block",
-                      width: "50%",
-                      marginBottom: "0.5rem",
-                    }}
-                  />
-                  <input
-                    type="number"
-                    placeholder="Duration (in weeks)"
-                    value={registerData.duration}
-                    onChange={(e) =>
-                      setRegisterData({
-                        ...registerData,
-                        duration: e.target.value,
-                      })
-                    }
-                    style={{
-                      display: "block",
-                      width: "50%",
-                      marginBottom: "0.5rem",
-                    }}
-                  />
-                  <button className="btn connect-btn" onClick={handleRegisterHuman}>
-                    Register Name
-                  </button>
-                </div>
-              </div>
-
-              {/* Verification Column */}
-              <div style={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
-                marginBottom: "1rem",
-              }}>
-                <input
-                  type="text"
-                  placeholder="Name"
-                  value={verifyData.name}
-                  onChange={(e) =>
-                    setVerifyData({ ...verifyData, name: e.target.value })
-                  }
-                  style={{
-                    display: "block",
-                    width: "50%",
-                    marginBottom: "0.5rem",
-                  }}
-                />
-                <div style={{ marginBottom: "1rem" }}>
-                  <input
-                    type="file"
-                    onChange={(e) => handleFileUpload(e.target.files[0])}
-                    style={{ display: "block", marginBottom: "0.5rem" }}
-                  />
-                  <button className="btn connect-btn" onClick={handleVerifyHuman}>
-                    Verify Name
-                  </button>
-                </div>
-              </div>
-
-            </>
-          ) : (
-            <>
-              <br />
-              <button className="btn connect-btn" onClick={connectWeb3}>
-                Connect Wallet
-              </button>
-            </>
+            ) : (
+            <ConnectBtn
+              address={client.address}
+              onClick={client.isConnected ? disconnectWeb3 : connectWeb3}
+            />
           )}
         </main>
-        <p>
-        </p>
-        <Crowd />
       </section >
+
+
+        <div
+          ref={formWrapperRef}
+          className={`form-wrapper d-flex flex-column ${client.isConnected ? 'show' : 'hide'}`}
+        >
+
+        {/* Registration Column */}
+        <form className="d-flex flex-column">
+          <h3>Register Name</h3>
+            <input
+              type="text"
+              placeholder="Name"
+              value={registerData.name}
+              onChange={(e) =>
+                setRegisterData({ ...registerData, name: e.target.value })
+              }
+            />
+            <input
+              type="text"
+              placeholder="Public Key X Coordinate"
+              value={registerData.pubKeyX}
+              onChange={(e) =>
+                setRegisterData({
+                  ...registerData,
+                  pubKeyX: e.target.value,
+                })
+              }
+            />
+            <input
+              type="text"
+              placeholder="Public Key Y Coordinate"
+              value={registerData.pubKeyY}
+              onChange={(e) =>
+                setRegisterData({
+                  ...registerData,
+                  pubKeyY: e.target.value,
+                })
+              }
+            />
+            <input
+              type="number"
+              placeholder="Duration (in weeks)"
+              value={registerData.duration}
+              onChange={(e) =>
+                setRegisterData({
+                  ...registerData,
+                  duration: e.target.value,
+                })
+              }
+            />
+            <button className="btn connect-btn" onClick={handleRegisterHuman}>
+              Register Name
+            </button>
+        </form>
+
+        {/* Verification Column */}
+        <form className="d-flex flex-column">
+          <h3>Verify Name</h3>
+          <input
+            type="text"
+            placeholder="Name"
+            value={verifyData.name}
+            onChange={(e) =>
+              setVerifyData({ ...verifyData, name: e.target.value })
+            }
+          />
+            <input
+              type="file"
+              onChange={(e) => handleFileUpload(e.target.files[0])}
+              style={{ display: "block", marginBottom: "0.5rem" }}
+            />
+            <button className="btn connect-btn" onClick={handleVerifyHuman}>
+              Verify Name
+            </button>
+        </form>
+
+      </div>
       <Footer />
-    </>
+    </div>
   );
 };
+
+const ConnectBtn = ({ address, onClick }) => {
+  return (
+    <button className="btn connect-btn" onClick={onClick}>
+      {address?.length ? (
+        <>
+          {address.slice(0, 4)}...
+          {address.slice(38, 42)}
+        </>
+      ) : (
+        <>Connect Wallet</>
+      )}
+    </button>
+  )
+}
 
 export default Index;

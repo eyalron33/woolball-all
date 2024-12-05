@@ -179,11 +179,11 @@ const Crowd = () => {
             ref={canvasRef}
             style={{
                 position: "absolute",
-                bottom: "0%",
-                zIndex: -1,
+                bottom: "0",
+                zIndex: -2,
                 width: "100%",
-                height: "250px",
-                opacity: "0.9",
+                height: "400px",
+                opacity: "0.8",
             }}
         />
     );
